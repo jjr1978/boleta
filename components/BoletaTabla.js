@@ -1,5 +1,4 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -7,32 +6,47 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { boletaEjemplo } from "../store/store";
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import {
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+} from "@material-ui/core";
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  button: {
-    margin: '1em',
-  },
-});
+function ccyFormat(num) {
+  return `$ ${num.toFixed(2)}`;
+}
 
-const rows = boletaEjemplo.items;
+export default function BoletaTabla(props) {
+  const [open, setOpen] = React.useState(false);
+  const [id, setId] = React.useState(0);
+  const [total, setTotal] = React.useState(0);
+  const data = props.datos;
+  const handleClickOpen = (rowId) => {
+    setOpen(true);
+    setId(rowId);
+  };
 
-export default function DenseTable() {
-  const classes = useStyles();
-
+  const totalItems = () => {
+    // console.log(data.map(({importe})=>importe));
+    return data? data.map(({importe})=>importe).reduce((sum,i)=> sum +i,0):0;
+  }
+  const handleClose = () => {
+    if (id) {
+      props.eliminarFila(id);
+    }
+    setId();
+    setOpen(false);
+  };
   return (
-
+    <Box width="{900}">
       <TableContainer component={Paper}>
-        <Table
-          className={classes.table}
-          size="small"
-          aria-label="a dense table"
-        >
+        <Table size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
               <TableCell>Código</TableCell>
@@ -45,22 +59,58 @@ export default function DenseTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell component="th" scope="row">
-                  {row.codigo}
-                </TableCell>
-                <TableCell align="right">{row.descripcion}</TableCell>
-                <TableCell align="right">{row.referencia}</TableCell>
-                <TableCell align="right">{row.vencimiento}</TableCell>
-                <TableCell align="right">{row.importe}</TableCell>
-                <TableCell align="right"><EditIcon color="primary"/></TableCell>
-                <TableCell align="right"><DeleteIcon color="secondary"/></TableCell>
-              </TableRow>
-            ))}
+            {data
+              ? data.map((row) => (
+                  <TableRow key={row.codigo}>
+                    <TableCell component="th" scope="row">
+                      {row.codigo}
+                    </TableCell>
+                    <TableCell align="right">{row.descripcion}</TableCell>
+                    <TableCell align="right">{row.referencia}</TableCell>
+                    <TableCell align="right">{row.vencimiento}</TableCell>
+                    <TableCell align="right" >{ccyFormat(row.importe)}</TableCell>
+                    {/* <TableCell align="right">
+                    <EditIcon color="primary" />
+                  </TableCell> */}
+                    <TableCell align="right">
+                      <DeleteIcon
+                        color="secondary"
+                        onClick={() => handleClickOpen(row.codigo)}
+                      />
+                    </TableCell>
+                  </TableRow>
+              )): null
+            }
+            <TableRow>
+          
+            <TableCell colSpan={4}>Total</TableCell>
+            <TableCell align="right">{ccyFormat(totalItems())}</TableCell>
+          </TableRow>
+
           </TableBody>
         </Table>
       </TableContainer>
-
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Eliminar Item"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Está Seguro que quiere eliminar el item seleccionado
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            Eliminar
+          </Button>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }

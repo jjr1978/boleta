@@ -1,20 +1,19 @@
 import Head from 'next/head'
 import Boleta from '../components/Boleta'
+import { AppBar, Toolbar, Typography } from '@material-ui/core'
 
 export default function Home() {
   return (
     <div className="container">
-      <Head>
-        <title>Boleta de Pago - Aref</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-
-      </Head>
-
-      <main>
-        <h3 className="title">
-          Generá tu boleta de pago
-        </h3>
+        <main>
+      <AppBar position="static">
+            <Toolbar>
+                <Typography variant="title" color="inherit">
+                 Generá tu boleta de pago
+                </Typography>
+            </Toolbar>
+        </AppBar>
+  
 
         <Boleta />
         

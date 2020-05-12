@@ -1,39 +1,18 @@
 import React, { useState } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { items } from "../store/store";
-import {
-  TextField,
-  Button,
-  makeStyles,
-  Paper,
-} from "@material-ui/core";
+import { TextField, Button, makeStyles, Paper, Box, Container } from "@material-ui/core";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
-import theme from '../theme';
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 200,
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-}));
 
 export default function AltaItem(props) {
   const [item, setItem] = useState({
-    itemCod: "",
+    id: 5,
+    codigo: "",
+    descripcion: "",
     referencia: "",
-    importe: "",
-    fecha: "",
+    importe: 0,
+    vencimiento: "12/05/2020",
   });
-  const classes = useStyles();
 
   const handleClickAgregar = () => {
     props.handleAltaItem(item);
@@ -41,46 +20,72 @@ export default function AltaItem(props) {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setItem({ ...item, [name]: value });
+    setItem({ ...item, [name]: name === "importe" ? parseInt(value) : value });
+  };
+
+  const setItemValue = (nuevoCodItem) => {
+    setItem({
+      ...item,
+      id: nuevoCodItem.codigo,
+      codigo: nuevoCodItem.codigo,
+      descripcion: nuevoCodItem.descripcion,
+    });
   };
 
   return (
-    <Paper variant="outlined" elevation="2">
-      <Autocomplete
-        id="itemCod"
-        options={items}
-        size="small"
-        getOptionLabel={(option) => option.codigo + " - " + option.descripcion}
-        style={{ width: 600 }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Item"
-            value={item.itemCod}
-            onChange={handleChange}
-          />
-        )}
-      />
-      <TextField label="Referencia" id="referencia" value={item.referencia} />
-      <TextField label="Importe" id="importe" value={item.importe} />
-      <TextField
-        id="fecha"
-        label="Fecha"
-        type="date"
-        defaultValue="2020-05-09"
-        value={item.fecha}
-        onChange={handleChange}
-        // onChange={handleChange}
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        // className={classes.button}
-        onClick={handleClickAgregar}
-        endIcon={<AddBoxOutlinedIcon />}
-      >
-        Agregar
-      </Button>
-    </Paper>
+    <Box  border={1} borderColor="primary.main" borderRadius={10} p={3}>
+      <Box>
+        <Autocomplete
+          name="itemCodAC"
+          id="itemCodAC"
+          options={items}
+          size="small"
+          getOptionLabel={(option) =>
+            option.codigo + " - " + option.descripcion
+          }
+          style={{ width: 600 }}
+          onChange={(event, newValue) => {
+            setItemValue(newValue);
+          }}
+          value={item.itemCod}
+          renderInput={(params) => (
+            <TextField {...params} label="Item" variant="outlined" />
+          )}
+        />
+        <TextField
+          name="referencia"
+          label="Referencia"
+          id="referencia"
+          value={item.referencia}
+          onChange={handleChange}
+        />
+        <TextField
+          name="importe"
+          label="Importe"
+          id="importe"
+          type="number"
+          value={item.importe}
+          onChange={handleChange}
+        />
+        <TextField
+          id="vencimiento"
+          name="vencimiento"
+          label="Fecha"
+          type="date"
+          defaultValue="2017-05-24"
+          onChange={handleChange}
+        />
+      </Box>
+      <Box mt={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleClickAgregar}
+          endIcon={<AddBoxOutlinedIcon />}
+        >
+          Agregar
+        </Button>
+      </Box>
+    </Box>
   );
 }
