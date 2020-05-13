@@ -4,15 +4,14 @@ import {
   Typography,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
-  Paper,
   Toolbar,
   Button,
-  Container,
   Box,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import BoletaTabla from "../components/BoletaTabla";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
+import PrintIcon from "@material-ui/icons/Print";
 import AltaItem from "../components/AltaItem";
 
 export default function BoletaDetallePanel(props) {
@@ -24,13 +23,14 @@ export default function BoletaDetallePanel(props) {
   };
 
   const handleAltaItem = (item) => {
+    if (item) setData([...data, item]);
     setMostrarAltaItem(false);
-    setData([...data, item]);
   };
 
+
   const eliminarFila = (id) => {
-    setData(data.filter(item=>item.id !== id))
-  }
+    setData(data.filter((item) => item.id !== id));
+  };
 
   return (
     <Box>
@@ -45,10 +45,11 @@ export default function BoletaDetallePanel(props) {
         <ExpansionPanelDetails>
           <Box width="90%">
             {mostrarAltaItem ? (
-              <AltaItem handleAltaItem={handleAltaItem} />
+              <AltaItem open={true} handleAltaItem={handleAltaItem} />
             ) : (
               <Toolbar>
                 <Button
+                  style={{ margin: 12 }}
                   variant="contained"
                   color="primary"
                   endIcon={<AddBoxOutlinedIcon />}
@@ -56,6 +57,19 @@ export default function BoletaDetallePanel(props) {
                 >
                   Agregar
                 </Button>
+                {data.length !== 0 ? (
+                  <Button
+                    style={{ margin: 12 }}
+                    variant="contained"
+                    color="primary"
+                    endIcon={<PrintIcon />}
+                    onClick={() => {
+                      alert("Aca deberia generar la boleta");
+                    }}
+                  >
+                    Generar Boleta
+                  </Button>
+                ) : null}
               </Toolbar>
             )}
             <BoletaTabla datos={data} eliminarFila={eliminarFila} />

@@ -1,29 +1,31 @@
 import React, { useState } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import { items } from "../store/store";
 import {
   TextField,
   Button,
   makeStyles,
-  Paper,
   Box,
   Container,
+  Dialog,
+  DialogTitle,
 } from "@material-ui/core";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles({
   option: {
     fontSize: 12,
-    '& > span': {
+    "& > span": {
       marginRight: 10,
       fontSize: 14,
     },
   },
-  campos:{
-    paddingLeft:"1em",
-    paddingRight:"1em"
-  }
+  campos: {
+    paddingLeft: "1em",
+    paddingRight: "1em",
+  },
 });
 
 export default function AltaItem(props) {
@@ -42,9 +44,14 @@ export default function AltaItem(props) {
     props.handleAltaItem(item);
   };
 
+  const handleClickCancelar = () => {
+    props.handleAltaItem();
+  };
+
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setItem({ ...item, [name]: name === "importe" ? parseInt(value) : value });
+    setItem({ ...item, [name]:/* name === "importe" ? parseInt(value) : */value });
   };
 
   const setItemValue = (nuevoCodItem) => {
@@ -56,9 +63,20 @@ export default function AltaItem(props) {
     });
   };
 
+  const setImporte = (nuevoValor) => {
+    const valor = parseFloat(nuevoValor).toFixed(2)
+    setItem({...item,'importe':valor})
+  }
+
   return (
-    <Box border={1} borderColor="primary.main" borderRadius={10} p={3}>
-      <Box>
+    <Dialog
+      open={props.open}
+      aria-labelledby="form-dialog-title"
+      fullWidth={true}
+      maxWidth="lg"
+    >
+      <DialogTitle id="form-dialog-tiulo">Ingrese Item</DialogTitle>
+      <Container>
         <Autocomplete
           name="itemCodAC"
           id="itemCodAC"
@@ -71,7 +89,6 @@ export default function AltaItem(props) {
           getOptionLabel={(option) =>
             option.codigo + " - " + option.descripcion
           }
-          style={{ width: 600 }}
           onChange={(event, newValue) => {
             setItemValue(newValue);
           }}
@@ -81,28 +98,30 @@ export default function AltaItem(props) {
           )}
         />
         <TextField
+          style={{ margin: 24 }}
           name="referencia"
           label="Referencia"
           id="referencia"
           value={item.referencia}
           onChange={handleChange}
+          required
         />
         <CurrencyTextField
-
+          style={{ margin: 24 }}
           label="Precio "
           variant="standard"
-          value={item.importe}
+          //value={item.importe}
           currencySymbol="$"
-          minimumValue="0"
-          outputFormat="string"
+          // minimumValue="0"
+          outputFormat="number"
           decimalCharacter=","
           digitGroupSeparator="."
-          onChange={handleChange}
+          onChange={(event,value)=>setImporte(value)}
           id="importe"
           name="importe"
-          classes={{
-            campos: classes.campos,
-          }}
+          // classes={{
+          //   campos: classes.campos,
+          // }}
         />
         {/* <TextField
           name="importe"
@@ -113,6 +132,7 @@ export default function AltaItem(props) {
           onChange={handleChange}
         /> */}
         <TextField
+          style={{ margin: 24 }}
           id="vencimiento"
           name="vencimiento"
           label="Fecha"
@@ -120,17 +140,27 @@ export default function AltaItem(props) {
           defaultValue="2017-05-24"
           onChange={handleChange}
         />
-      </Box>
-      <Box mt={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClickAgregar}
-          endIcon={<AddBoxOutlinedIcon />}
-        >
-          Agregar
-        </Button>
-      </Box>
-    </Box>
+
+        <Box mt={2}>
+          <Button
+            style={{ margin: 24 }}
+            variant="contained"
+            color="primary"
+            onClick={handleClickAgregar}
+            endIcon={<AddBoxOutlinedIcon />}
+          >
+            Agregar
+          </Button>
+          <Button
+            style={{ margin: 24 }}
+            variant="contained"
+            onClick={handleClickCancelar}
+            endIcon={<CancelIcon />}
+          >
+            Cancelar
+          </Button>
+        </Box>
+      </Container>
+    </Dialog>
   );
 }

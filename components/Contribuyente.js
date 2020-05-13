@@ -152,6 +152,7 @@ export default function Contribuyente(props) {
                 label="Razón Social"
                 onChange={handleChangeRazonSocial}
                 value={razonSocial}
+                required={true}
               />
               <TextField
                 id="fecha"

@@ -19,7 +19,7 @@ import {
 } from "@material-ui/core";
 
 function ccyFormat(num) {
-  return `$ ${num.toFixed(2)}`;
+  return `$ ${parseFloat(num).toFixed(2)}`;
 }
 
 export default function BoletaTabla(props) {
@@ -33,18 +33,24 @@ export default function BoletaTabla(props) {
   };
 
   const totalItems = () => {
-    // console.log(data.map(({importe})=>importe));
-    return data? data.map(({importe})=>importe).reduce((sum,i)=> sum +i,0):0;
-  }
-  const handleClose = () => {
+    return data
+      ? data.map(({ importe }) => importe).reduce((sum, i) => sum + i, 0)
+      : 0;
+  };
+  const handleCloseElim = () => {
     if (id) {
       props.eliminarFila(id);
     }
     setId();
     setOpen(false);
   };
+
+  const handleCloseCanc = () => {
+    setOpen(false);
+  };
+
   return (
-    <Box width="{900}">
+    <Box>
       <TableContainer component={Paper}>
         <Table size="small" aria-label="a dense table">
           <TableHead>
@@ -68,7 +74,18 @@ export default function BoletaTabla(props) {
                     <TableCell align="right">{row.descripcion}</TableCell>
                     <TableCell align="right">{row.referencia}</TableCell>
                     <TableCell align="right">{row.vencimiento}</TableCell>
-                    <TableCell align="right" ><span style={{ whiteSpace: 'nowrap', overflow: 'hidden', width: '150px', display: 'block' }}>{ccyFormat(row.importe)}</span></TableCell>
+                    <TableCell align="right">
+                      <span
+                        style={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          width: "150px",
+                          display: "block",
+                        }}
+                      >
+                        {ccyFormat(row.importe)}
+                      </span>
+                    </TableCell>
                     {/* <TableCell align="right">
                     <EditIcon color="primary" />
                   </TableCell> */}
@@ -79,20 +96,18 @@ export default function BoletaTabla(props) {
                       />
                     </TableCell>
                   </TableRow>
-              )): null
-            }
+                ))
+              : null}
             <TableRow>
-          
-            <TableCell colSpan={4}>Total</TableCell>
-            <TableCell align="right">{ccyFormat(totalItems())}</TableCell>
-          </TableRow>
-
+              <TableCell colSpan={4}>Total</TableCell>
+              <TableCell align="right">{ccyFormat(totalItems())}</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={handleCloseCanc}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -103,10 +118,10 @@ export default function BoletaTabla(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">
+          <Button onClick={handleCloseElim} color="secondary">
             Eliminar
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button onClick={handleCloseCanc} color="primary" autoFocus>
             Cancelar
           </Button>
         </DialogActions>

@@ -7,7 +7,6 @@ export default function ControlledExpansionPanels() {
 
   const handlePanel = (panel)=>{
     setExpanded(panel);
-    console.log("expandend",expanded)
   }
 
   return (
