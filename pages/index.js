@@ -1,29 +1,22 @@
-import Head from 'next/head'
-import Boleta from '../components/Boleta'
-import { AppBar, Toolbar, Typography } from '@material-ui/core'
+import Boleta from "../components/Boleta";
+import { AppBar, Toolbar, Typography } from "@material-ui/core";
 
 export default function Home() {
   return (
     <div className="container">
-        <main>
-      <AppBar position="static">
-            <Toolbar>
-                <Typography variant="title" color="inherit">
-                 Generá tu boleta de pago
-                </Typography>
-            </Toolbar>
+      <main>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography color="inherit">
+              Generá tu boleta de pago
+            </Typography>
+          </Toolbar>
         </AppBar>
-  
 
         <Boleta />
-        
-
-
       </main>
 
-      <footer>
-        AREF
-      </footer>
+      <footer>AREF</footer>
 
       <style jsx>{`
         .container {
@@ -33,6 +26,7 @@ export default function Home() {
           flex-direction: column;
           justify-content: center;
           align-items: center;
+          background: #eaeaea;
         }
 
         main {
@@ -171,5 +165,5 @@ export default function Home() {
         }
       `}</style>
     </div>
-  )
+  );
 }

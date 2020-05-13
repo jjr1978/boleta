@@ -1,10 +1,34 @@
 import React, { useState } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import { items } from "../store/store";
-import { TextField, Button, makeStyles, Paper, Box, Container } from "@material-ui/core";
+import {
+  TextField,
+  Button,
+  makeStyles,
+  Paper,
+  Box,
+  Container,
+} from "@material-ui/core";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
 
+const useStyles = makeStyles({
+  option: {
+    fontSize: 12,
+    '& > span': {
+      marginRight: 10,
+      fontSize: 14,
+    },
+  },
+  campos:{
+    paddingLeft:"1em",
+    paddingRight:"1em"
+  }
+});
+
 export default function AltaItem(props) {
+  const classes = useStyles();
+
   const [item, setItem] = useState({
     id: 5,
     codigo: "",
@@ -33,12 +57,16 @@ export default function AltaItem(props) {
   };
 
   return (
-    <Box  border={1} borderColor="primary.main" borderRadius={10} p={3}>
+    <Box border={1} borderColor="primary.main" borderRadius={10} p={3}>
       <Box>
         <Autocomplete
           name="itemCodAC"
           id="itemCodAC"
+          classes={{
+            option: classes.option,
+          }}
           options={items}
+          autoHighlight
           size="small"
           getOptionLabel={(option) =>
             option.codigo + " - " + option.descripcion
@@ -59,14 +87,31 @@ export default function AltaItem(props) {
           value={item.referencia}
           onChange={handleChange}
         />
-        <TextField
+        <CurrencyTextField
+
+          label="Precio "
+          variant="standard"
+          value={item.importe}
+          currencySymbol="$"
+          minimumValue="0"
+          outputFormat="string"
+          decimalCharacter=","
+          digitGroupSeparator="."
+          onChange={handleChange}
+          id="importe"
+          name="importe"
+          classes={{
+            campos: classes.campos,
+          }}
+        />
+        {/* <TextField
           name="importe"
           label="Importe"
           id="importe"
           type="number"
           value={item.importe}
           onChange={handleChange}
-        />
+        /> */}
         <TextField
           id="vencimiento"
           name="vencimiento"

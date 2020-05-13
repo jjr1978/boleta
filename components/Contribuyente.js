@@ -114,11 +114,11 @@ export default function Contribuyente(props) {
   };
 
   return (
-    <Box>
-      <ExpansionPanel expanded={props.expanded}>
+    <Box >
+      <ExpansionPanel expanded={props.expanded} >
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
+          // aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
           <Typography>{titulo}</Typography>
@@ -179,7 +179,7 @@ export default function Contribuyente(props) {
                 </Select>
               </FormControl>
             </Box>
-            <Box mt={2}>
+            <Box pt={1}>
               <FormControl>
                 <Button
                   variant="contained"

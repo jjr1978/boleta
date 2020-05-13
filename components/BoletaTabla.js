@@ -68,7 +68,7 @@ export default function BoletaTabla(props) {
                     <TableCell align="right">{row.descripcion}</TableCell>
                     <TableCell align="right">{row.referencia}</TableCell>
                     <TableCell align="right">{row.vencimiento}</TableCell>
-                    <TableCell align="right" >{ccyFormat(row.importe)}</TableCell>
+                    <TableCell align="right" ><span style={{ whiteSpace: 'nowrap', overflow: 'hidden', width: '150px', display: 'block' }}>{ccyFormat(row.importe)}</span></TableCell>
                     {/* <TableCell align="right">
                     <EditIcon color="primary" />
                   </TableCell> */}
