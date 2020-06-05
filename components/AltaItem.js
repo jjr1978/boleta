@@ -72,7 +72,6 @@ export default function AltaItem(props) {
     <Dialog
       open={props.open}
       aria-labelledby="form-dialog-title"
-      fullWidth={true}
       maxWidth="lg"
     >
       <DialogTitle id="form-dialog-tiulo">Ingrese Item</DialogTitle>

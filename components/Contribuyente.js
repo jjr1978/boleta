@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import MaskedInput from "react-text-mask";
 import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
   Typography,
-  ExpansionPanelDetails,
   TextField,
   FormControl,
   InputLabel,
@@ -14,6 +11,7 @@ import {
   Button,
   Input,
   Box,
+  Grid,
 } from "@material-ui/core";
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -77,9 +75,8 @@ function TextMaskCUIT(props) {
   );
 }
 
-export default function Contribuyente(props) {
+export default function Contribuyente({ handleContribuyente }) {
   const [titulo, setTitulo] = useState("Ingrese los datos del Contribuyente");
-  // const [expanded, setExpanded] = useState(props.expanded);
   const [selectedDate, setSelectedDate] = React.useState(
     new Date("2020-05-09")
   );
@@ -88,112 +85,95 @@ export default function Contribuyente(props) {
   const [razonSocial, setRazonSocial] = React.useState("Juan Jose Rodriguez");
   const [distrito, setDistrito] = React.useState("");
 
+
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    handleContribuyente('fecha', date);
   };
 
   const handleChangeDistrito = (event) => {
     setDistrito(event.target.value);
+    handleContribuyente('distrito', event.target.value);
   };
 
   const handleChangeRazonSocial = (event) => {
     setRazonSocial(event.target.value);
-  };
-
-  const handleClickSeleccionar = () => {
-    setTitulo(cuit + " " + razonSocial + " - " + distrito);
-    props.handleExpanded("boleta");
+    handleContribuyente('razonSocial', event.target.value);
   };
 
   const handleChangeNib = (event) => {
     setNib(event.target.value);
+    handleContribuyente('nib', event.target.value);
   };
 
   const handleChangeCuit = (event) => {
     setCuit(event.target.value);
+    handleContribuyente('cuit', event.target.value);
   };
 
   return (
-    <Box >
-      <ExpansionPanel expanded={props.expanded} >
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          // aria-controls="panel1bh-content"
-          id="panel1bh-header"
-        >
-          <Typography>{titulo}</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <form noValidate autoComplete="off">
-            <Box>
-              <FormControl>
-                <InputLabel htmlFor="nib">NIB</InputLabel>
-                <Input
-                  value={nib}
-                  onChange={handleChangeNib}
-                  name="nib"
-                  id="nib"
-                  inputComponent={TextMaskNIB}
-                />
-              </FormControl>
-              <FormControl>
-                <InputLabel htmlFor="nib">CUIT</InputLabel>
-                <Input
-                  value={cuit}
-                  onChange={handleChangeCuit}
-                  id="cuit"
-                  name="cuit"
-                  label="CUIT"
-                  inputComponent={TextMaskCUIT}
-                />
-              </FormControl>
-              <TextField
-                id="razonSocial"
-                label="Razón Social"
-                onChange={handleChangeRazonSocial}
-                value={razonSocial}
-                required={true}
-              />
-              <TextField
-                id="fecha"
-                label="Fecha"
-                type="date"
-                defaultValue="2020-05-09"
-                // onChange={handleChange}
+    <>
+      <Typography variant="h6" gutterBottom>
+        Contribuyente
+      </Typography>
 
-                // InputLabelProps={{
-                //   shrink: true,
-                // }}
-              />
-              <FormControl>
-                <InputLabel id="distrito-label">Distrito</InputLabel>
-                <Select
-                  labelId="distrito-label"
-                  id="distrito"
-                  value={distrito}
-                  onChange={handleChangeDistrito}
-                  width="30"
-                >
-                  <MenuItem value={"USH"}>Ushuaia</MenuItem>
-                  <MenuItem value={"RGR"}>Rio Grande</MenuItem>
-                  <MenuItem value={"BUE"}>Buenos Aires</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            <Box pt={1}>
-              <FormControl>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleClickSeleccionar}
-                >
-                  Seleccionar
-                </Button>
-              </FormControl>
-            </Box>
-          </form>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    </Box>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6}>
+          <InputLabel htmlFor="nib">NIB</InputLabel>
+          <Input
+            value={nib}
+            onChange={handleChangeNib}
+            name="nib"
+            id="nib"
+            inputComponent={TextMaskNIB}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <InputLabel htmlFor="nib">CUIT</InputLabel>
+          <Input
+            value={cuit}
+            onChange={handleChangeCuit}
+            id="cuit"
+            name="cuit"
+            label="CUIT"
+            inputComponent={TextMaskCUIT}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="razonSocial"
+            label="Razón Social"
+            onChange={handleChangeRazonSocial}
+            value={razonSocial}
+            required={true}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            id="fecha"
+            label="Fecha"
+            type="date"
+            defaultValue="2020-05-09"
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <InputLabel id="distrito-label">Distrito</InputLabel>
+          <Select
+            labelId="distrito-label"
+            id="distrito"
+            value={distrito}
+            onChange={handleChangeDistrito}
+            width="30"
+          >
+            <MenuItem value={"USH"}>Ushuaia</MenuItem>
+            <MenuItem value={"RGR"}>Rio Grande</MenuItem>
+            <MenuItem value={"BUE"}>Buenos Aires</MenuItem>
+          </Select>
+        </Grid>
+      </Grid>
+    </>
   );
 }
