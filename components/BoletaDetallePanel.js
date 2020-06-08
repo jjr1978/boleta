@@ -27,7 +27,6 @@ export default function BoletaDetallePanel({
 
   return (
     <Grid>
-      <Typography variant="h6">Items</Typography>
       {mostrarAltaItem ? (
         <AltaItem open={true} handleAltaItem={nuevaFila} />
       ) : (

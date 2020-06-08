@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import Contribuyente from "../components/Contribuyente";
 import BoletaDetallePanel from "../components/BoletaDetallePanel";
-import BoletaFinalizar from '../components/BoletaFinalizar';
-import { CssBaseline, AppBar, Typography, Toolbar } from "@material-ui/core";
+import BoletaFinalizar from "../components/BoletaFinalizar";
+import {
+  CssBaseline,
+  AppBar,
+  Typography,
+  Toolbar,
+  StepContent,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Stepper from "@material-ui/core/Stepper";
@@ -11,40 +17,20 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 
 const steps = ["Contribuyente", "Items", "Finalizar"];
+
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    position: "relative",
-  },
-  layout: {
-    width: "auto",
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-      width: 600,
-      marginLeft: "auto",
-      marginRight: "auto",
-    },
-  },
-  paper: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-    padding: theme.spacing(2),
-    [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
-      marginTop: theme.spacing(6),
-      marginBottom: theme.spacing(6),
-      padding: theme.spacing(3),
-    },
-  },
-  stepper: {
-    padding: theme.spacing(3, 0, 5),
-  },
-  buttons: {
-    display: "flex",
-    justifyContent: "flex-end",
+  root: {
+    width: "100%",
   },
   button: {
-    marginTop: theme.spacing(3),
-    marginLeft: theme.spacing(1),
+    marginTop: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
+  actionsContainer: {
+    marginBottom: theme.spacing(2),
+  },
+  resetContainer: {
+    padding: theme.spacing(3),
   },
 }));
 
@@ -55,11 +41,17 @@ export default function Boleta() {
   const classes = useStyles();
 
   const handleNext = () => {
-    setActiveStep(activeStep + 1);
+    if (controlarPaso(activeStep)){
+      setActiveStep(activeStep + 1);
+    }
   };
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
   };
 
   const handleEliminarItem = (id) => {
@@ -74,6 +66,21 @@ export default function Boleta() {
     contribuyente[campo] = valor;
     setContribuyente(contribuyente);
   };
+
+  const controlarPaso = (i) => {
+    if (i === 0) { return contribuyente.cuit && contribuyente.razonSocial;}
+    else return true;
+  }
+
+  const etiquetaPaso = (i) => {
+    if (i < activeStep){
+      if (i===0){
+        return contribuyente.razonSocial +" - CUIT: "+contribuyente.cuit;
+      } if (i===1){
+        return "Total: $"+totalItems(); 
+      }
+    }
+  }
 
   const totalItems = () => {
     return items
@@ -97,14 +104,20 @@ export default function Boleta() {
           />
         );
       case 2:
-        return <BoletaFinalizar contribuyente={contribuyente} items={items} totalItems={totalItems} />;
+        return (
+          <BoletaFinalizar
+            contribuyente={contribuyente}
+            items={items}
+            totalItems={totalItems}
+          />
+        );
       default:
         throw new Error("Unknown step");
     }
   }
 
   return (
-    <>
+    <div className={classes.root}>
       <CssBaseline />
       <AppBar position="absolute" color="default">
         <Toolbar>
@@ -115,53 +128,50 @@ export default function Boleta() {
       </AppBar>
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-          <Typography component="h1" variant="h4" align="center">
-            Checkout
-          </Typography>
-          <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map((label) => (
+          <Stepper activeStep={activeStep} orientation="vertical">
+            {steps.map((label,index) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel>{(index>=activeStep)?label:etiquetaPaso(index)}</StepLabel>
+                <StepContent>
+                  {getStepContent(activeStep)}
+                  <div className={classes.actionsContainer}>
+                    <div>
+                      <Button
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        className={classes.button}
+                      >
+                        Volver
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNext}
+                        className={classes.button}
+                      >
+                        {activeStep === steps.length - 1
+                          ? "Generar Boleta"
+                          : "Siguiente"}
+                      </Button>
+                    </div>
+                  </div>
+                </StepContent>
               </Step>
             ))}
           </Stepper>
-          <>
-            {activeStep === steps.length ? (
-              <>
-                <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
-                </Typography>
-                <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order
-                  confirmation, and will send you an update when your order has
-                  shipped.
-                </Typography>
-              </>
-            ) : (
-              <>
-                {getStepContent(activeStep)}
-                <div className={classes.buttons}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} className={classes.button}>
-                      Atrás
-                    </Button>
-                  )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    className={classes.button}
-                  >
-                    {activeStep === steps.length - 1
-                      ? "Generar Boleta"
-                      : "Siguiente"}
-                  </Button>
-                </div>
-              </>
-            )}
-          </>
+
+          {activeStep === steps.length && (
+            <Paper square elevation={0} className={classes.resetContainer}>
+              <Typography>
+                All steps completed - you&apos;re finished
+              </Typography>
+              <Button onClick={handleReset} className={classes.button}>
+                Reset
+              </Button>
+            </Paper>
+          )}
         </Paper>
       </main>
-    </>
+    </div>
   );
 }
