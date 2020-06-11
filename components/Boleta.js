@@ -76,7 +76,7 @@ export default function Boleta() {
   };
 
   const controlarPaso = (i) => {
-    /* let erroresCampos = {};
+    let erroresCampos = {};
     if (i === 0) {
       if (!contribuyente.nib) {erroresCampos["nib"] = "Se debe ingresa el NIB";}
 
@@ -87,8 +87,8 @@ export default function Boleta() {
       if (!contribuyente.distrito) {erroresCampos["distrito"] = "Se debe ingresa el Distrito";}
       setErrores(erroresCampos);
       return isEmpty(erroresCampos);
-    } else return true;*/
-    if (i === 0) {
+    } else return true;
+ /*   if (i === 0) {
       setContribuyente({
         nib: "11-111111-1",
         cuit: "11-111111-1",
@@ -123,7 +123,7 @@ export default function Boleta() {
         },
       ]);
     }
-    return true;
+    return true;*/
   };
 
   const etiquetaPaso = (i) => {

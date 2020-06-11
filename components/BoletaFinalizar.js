@@ -44,7 +44,6 @@ function ccyFormat(num) {
 
 export default function BoletaFinalizar({ contribuyente, items, totalItems }) {
   const classes = useStyles();
-  console.log(totalItems);
   return (
     <Card>
       <CardHeader title={getTitulo(contribuyente)} />

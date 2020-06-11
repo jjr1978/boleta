@@ -63,7 +63,6 @@ export default function AltaItem({ open, handleAltaItem }) {
 
   const validarFormulario = () => {
     let erroresCampos = {};
-    console.log(item.codigo);
     if (!item.codigo || item.codigo === "") {
       erroresCampos["codigo"] = "Se debe seleccionar un item";
     }
@@ -84,7 +83,6 @@ export default function AltaItem({ open, handleAltaItem }) {
         "La fecha debe posterior al día de la fecha";
     }
     setErrores(erroresCampos);
-    console.log("erroresCampos", erroresCampos);
     return isEmpty(erroresCampos);
   };
 
