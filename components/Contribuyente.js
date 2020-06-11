@@ -2,21 +2,13 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import MaskedInput from "react-text-mask";
 import {
-  Typography,
   TextField,
-  FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Button,
   Input,
-  Box,
   Grid,
-  InputAdornment,
-  InputBase,
 } from "@material-ui/core";
-
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 function TextMaskNIB(props) {
   const { inputRef, ...other } = props;
@@ -77,21 +69,29 @@ function TextMaskCUIT(props) {
   );
 }
 
-export default function Contribuyente({ handleContribuyente }) {
+function getFechaHoy() {
+  let d = new Date(),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+}
+
+export default function Contribuyente({ handleContribuyente, errores }) {
   const [titulo, setTitulo] = useState("Ingrese los datos del Contribuyente");
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date("2020-05-09")
-  );
+  const [selectedDate, setSelectedDate] = React.useState({});
   const [nib, setNib] = React.useState("");
-  const [cuit, setCuit] = React.useState("20-26571132-5");
-  const [razonSocial, setRazonSocial] = React.useState("Juan Jose Rodriguez");
+  const [cuit, setCuit] = React.useState("");
+  const [razonSocial, setRazonSocial] = React.useState("");
   const [distrito, setDistrito] = React.useState("");
 
-  const [errores, setErrores] = React.useState({});
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    handleContribuyente("fecha", date);
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
+    handleContribuyente("fecha", event.target.value);
   };
 
   const handleChangeDistrito = (event) => {
@@ -114,15 +114,9 @@ export default function Contribuyente({ handleContribuyente }) {
     handleContribuyente("cuit", event.target.value);
   };
 
-  const validarFormulario = () => {
-    erroresCampos = {};
-    if (!nib) return (erroresCampos["nib"] = "Se debe ingresa el NIB");
-    setErrores(erroresCampos);
+  const validarCampo = (campo) => {
+    return campo in errores;
   };
-
-  const validarCampo= (campo)=>{
-    return (campo in errores);
-  }
 
   return (
     <Grid container spacing={3}>
@@ -134,9 +128,9 @@ export default function Contribuyente({ handleContribuyente }) {
           name="nib"
           id="nib"
           inputComponent={TextMaskNIB}
-          error={validarCampo('nib')}
+          error={validarCampo("nib")}
         />
-        <InputLabel error>Debe ingresar el NIB</InputLabel>
+        <InputLabel error>{errores["nib"]}</InputLabel>
       </Grid>
       <Grid item xs={12} sm={6}>
         <InputLabel htmlFor="nib">CUIT</InputLabel>
@@ -147,7 +141,9 @@ export default function Contribuyente({ handleContribuyente }) {
           name="cuit"
           label="CUIT"
           inputComponent={TextMaskCUIT}
+          error={validarCampo("cuit")}
         />
+        <InputLabel error>{errores["cuit"]}</InputLabel>
       </Grid>
       <Grid item xs={12}>
         <TextField
@@ -157,14 +153,17 @@ export default function Contribuyente({ handleContribuyente }) {
           value={razonSocial}
           required={true}
           fullWidth
+          error={validarCampo("razonSocial")}
         />
+        <InputLabel error>{errores["razonSocial"]}</InputLabel>
       </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
           id="fecha"
           label="Fecha"
           type="date"
-          defaultValue="2020-05-09"
+        //  defaultValue={getFechaHoy()}
+          onChange={handleDateChange}
         />
       </Grid>
 
@@ -176,11 +175,13 @@ export default function Contribuyente({ handleContribuyente }) {
           value={distrito}
           onChange={handleChangeDistrito}
           width="30"
+          error={validarCampo("distrito")}
         >
           <MenuItem value={"USH"}>Ushuaia</MenuItem>
           <MenuItem value={"RGR"}>Rio Grande</MenuItem>
           <MenuItem value={"BUE"}>Buenos Aires</MenuItem>
         </Select>
+        <InputLabel error>{errores["distrito"]}</InputLabel>
       </Grid>
     </Grid>
   );

@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   button: {
-    marginTop: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    margin: theme.spacing(2),
+    
   },
   actionsContainer: {
     marginBottom: theme.spacing(2),
@@ -34,14 +34,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function isEmpty(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) return false;
+  }
+  return true;
+}
+
 export default function Boleta() {
   const [items, setItems] = useState([]);
   const [contribuyente, setContribuyente] = useState({});
   const [activeStep, setActiveStep] = useState(0);
   const classes = useStyles();
+  const [errores, setErrores] = React.useState({});
 
   const handleNext = () => {
-    if (controlarPaso(activeStep)){
+    if (controlarPaso(activeStep)) {
       setActiveStep(activeStep + 1);
     }
   };
@@ -68,19 +76,72 @@ export default function Boleta() {
   };
 
   const controlarPaso = (i) => {
-    if (i === 0) { return contribuyente.cuit && contribuyente.razonSocial;}
-    else return true;
-  }
+    /* let erroresCampos = {};
+    if (i === 0) {
+      if (!contribuyente.nib) {erroresCampos["nib"] = "Se debe ingresa el NIB";}
+
+      if (!contribuyente.cuit) {erroresCampos["cuit"] = "Se debe ingresa el CUIT";}
+
+      if (!contribuyente.razonSocial) {erroresCampos["razonSocial"] = "Se debe ingresa la Razón Social";}
+
+      if (!contribuyente.distrito) {erroresCampos["distrito"] = "Se debe ingresa el Distrito";}
+      setErrores(erroresCampos);
+      return isEmpty(erroresCampos);
+    } else return true;*/
+    if (i === 0) {
+      setContribuyente({
+        nib: "11-111111-1",
+        cuit: "11-111111-1",
+        razonSocial: "Juan Jose Rodriguez",
+        distrito: "RGR",
+      });
+    } else if (i === 1) {
+      setItems([
+        {
+          id: 1,
+          codigo: "100105025",
+          descripcion: "TASA - Trámites Urgentes",
+          referencia: "1212",
+          importe: "100.00",
+          vencimiento: "2020-06-12",
+        },
+        {
+          id: 2,
+          codigo: "100105029",
+          descripcion: "Certificado de …",
+          referencia: "1216",
+          importe: "1500.00",
+          vencimiento: "2020-06-12",
+        },
+        {
+          id: 3,
+          codigo: "102105053",
+          descripcion: "TASA - URGENTE",
+          referencia: "1218",
+          importe: "200.00",
+          vencimiento: "2020-06-12",
+        },
+      ]);
+    }
+    return true;
+  };
 
   const etiquetaPaso = (i) => {
-    if (i < activeStep){
-      if (i===0){
-        return contribuyente.razonSocial +" - CUIT: "+contribuyente.cuit;
-      } if (i===1){
-        return "Total: $"+totalItems(); 
+    if (i < activeStep) {
+      if (i === 0) {
+        return contribuyente.razonSocial + " - CUIT: " + contribuyente.cuit;
+      }
+      if (i === 1) {
+        return "Total: $" + totalItems();
       }
     }
-  }
+  };
+
+  const validarContribuyente = () => {
+    erroresCampos = {};
+    if (!nib) erroresCampos["nib"] = "Se debe ingresa el NIB";
+    setErrores(erroresCampos);
+  };
 
   const totalItems = () => {
     return items
@@ -93,7 +154,12 @@ export default function Boleta() {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <Contribuyente handleContribuyente={handleContribuyente} />;
+        return (
+          <Contribuyente
+            handleContribuyente={handleContribuyente}
+            errores={errores}
+          />
+        );
       case 1:
         return (
           <BoletaDetallePanel
@@ -129,9 +195,11 @@ export default function Boleta() {
       <main className={classes.layout}>
         <Paper className={classes.paper}>
           <Stepper activeStep={activeStep} orientation="vertical">
-            {steps.map((label,index) => (
+            {steps.map((label, index) => (
               <Step key={label}>
-                <StepLabel>{(index>=activeStep)?label:etiquetaPaso(index)}</StepLabel>
+                <StepLabel>
+                  {index >= activeStep ? label : etiquetaPaso(index)}
+                </StepLabel>
                 <StepContent>
                   {getStepContent(activeStep)}
                   <div className={classes.actionsContainer}>
@@ -139,6 +207,7 @@ export default function Boleta() {
                       <Button
                         disabled={activeStep === 0}
                         onClick={handleBack}
+                        variant="contained"
                         className={classes.button}
                       >
                         Volver

@@ -20,6 +20,11 @@ function ccyFormat(num) {
   return `$ ${parseFloat(num).toFixed(2)}`;
 }
 
+function dateFormat(fecha){
+  return '';
+}
+  
+
 export default function BoletaTabla({ items, total, eliminarFila }) {
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(0);

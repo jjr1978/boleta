@@ -4,11 +4,18 @@ import BoletaTabla from "../components/BoletaTabla";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
 import AltaItem from "../components/AltaItem";
 
+function isEmpty(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) return false;
+  }
+  return true;
+}
+
 export default function BoletaDetallePanel({
   handleAltaItem,
   handleEliminarItem,
   items,
-  totalItems
+  totalItems,
 }) {
   const [mostrarAltaItem, setMostrarAltaItem] = useState(false);
 
@@ -17,6 +24,15 @@ export default function BoletaDetallePanel({
   };
 
   const nuevaFila = (item) => {
+    let maxId = 0;
+    if (!isEmpty(items)) {
+      maxId = Math.max.apply(
+        null,
+        items.map((it) => it.id)
+      );
+    }
+    const nuevoId = maxId + 1;
+    item["id"] = nuevoId;
     handleAltaItem(item);
     setMostrarAltaItem(false);
   };
@@ -40,7 +56,11 @@ export default function BoletaDetallePanel({
           Agregar
         </Button>
       )}
-      <BoletaTabla items={items} eliminarFila={eliminarFila} total={totalItems}/>
+      <BoletaTabla
+        items={items}
+        eliminarFila={eliminarFila}
+        total={totalItems}
+      />
     </Grid>
   );
 }
