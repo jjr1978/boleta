@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import { items } from "../store/store";
+import { tipos_tramite } from "../store/store";
 import {
   TextField,
   Button,
@@ -10,7 +11,8 @@ import {
   Container,
   Dialog,
   DialogTitle,
-  InputLabel,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -75,13 +77,13 @@ export default function AltaItem({ open, handleAltaItem }) {
       erroresCampos["importe"] = "El importe debe ser mayor que 0";
     }
 
-    if (!item.vencimiento) {
-      erroresCampos["vencimiento"] =
-        "Se debe ingresar una fecha de Vencimiento";
-    } else if (item.vencimiento < getFechaHoy()) {
-      erroresCampos["vencimiento"] =
-        "La fecha debe posterior al día de la fecha";
-    }
+    // if (!item.vencimiento) {
+    //   erroresCampos["vencimiento"] =
+    //     "Se debe ingresar una fecha de Vencimiento";
+    // } else if (item.vencimiento < getFechaHoy()) {
+    //   erroresCampos["vencimiento"] =
+    //     "La fecha debe posterior al día de la fecha";
+    // }
     setErrores(erroresCampos);
     return isEmpty(erroresCampos);
   };
@@ -105,11 +107,14 @@ export default function AltaItem({ open, handleAltaItem }) {
   };
 
   const setItemValue = (nuevoCodItem) => {
-    setItem({
-      ...item,
-      codigo: nuevoCodItem.codigo,
-      descripcion: nuevoCodItem.descripcion,
-    });
+    if (nuevoCodItem) {
+      setItem({
+        ...item,
+        codigo: nuevoCodItem.cod_tipo_pago,
+        descripcion: nuevoCodItem.tipo_pago,
+        multinota: nuevoCodItem.multinota
+      });
+    }
   };
 
   const setImporte = (nuevoValor) => {
@@ -129,19 +134,19 @@ export default function AltaItem({ open, handleAltaItem }) {
           <Autocomplete
             name="itemCodAC"
             id="itemCodAC"
-            classes={{
-              option: classes.option,
-            }}
+            // classes={{
+            //   option: classes.option,
+            // }}
             options={items}
             autoHighlight
             size="small"
             getOptionLabel={(option) =>
-              option.codigo + " - " + option.descripcion
+              option.cod_tipo_pago + " - " + option.tipo_pago
             }
             onChange={(event, newValue) => {
               setItemValue(newValue);
             }}
-            value={item.itemCod}
+            // value={item.codigo}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -152,7 +157,6 @@ export default function AltaItem({ open, handleAltaItem }) {
               />
             )}
           />
-          <InputLabel error></InputLabel>
 
           <TextField
             style={{ margin: 24 }}
@@ -166,6 +170,27 @@ export default function AltaItem({ open, handleAltaItem }) {
             helperText={errores["referencia"]}
             autoComplete="off"
           />
+
+          {(item.multinota ===1) ? (
+            <Select
+              label="Trámite"
+              id="tipo-tramite"
+              value={item.tramite}
+              onChange={handleChange}
+              fullWidth
+            >
+              {}
+              {tipos_tramite
+                .filter((tipo) => tipo.cod_tipo_pago === item.codigo)
+                .map((tipo) => (
+                  <MenuItem value={10}>
+                    {tipo.descripcion}- $ {tipo.importe}
+                  </MenuItem>
+                ))}
+            </Select>
+          ) : (
+            <></>
+          )}
 
           <CurrencyTextField
             style={{ margin: 24 }}
@@ -183,6 +208,7 @@ export default function AltaItem({ open, handleAltaItem }) {
             autoComplete="off"
             error={validarCampo("importe")}
             helperText={errores["importe"]}
+
             // classes={{
             //   campos: classes.campos,
             // }}
@@ -195,7 +221,7 @@ export default function AltaItem({ open, handleAltaItem }) {
           value={item.importe}
           onChange={handleChange}
         /> */}
-          <TextField
+          {/* <TextField
             style={{ margin: 24 }}
             id="vencimiento"
             name="vencimiento"
@@ -205,7 +231,7 @@ export default function AltaItem({ open, handleAltaItem }) {
             onChange={handleChange}
             error={validarCampo("vencimiento")}
             helperText={errores["vencimiento"]}
-          />
+          /> */}
 
           <Box mt={2}>
             <Button

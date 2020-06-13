@@ -16,6 +16,7 @@ export default function BoletaDetallePanel({
   handleEliminarItem,
   items,
   totalItems,
+  errores
 }) {
   const [mostrarAltaItem, setMostrarAltaItem] = useState(false);
 
@@ -60,6 +61,7 @@ export default function BoletaDetallePanel({
         items={items}
         eliminarFila={eliminarFila}
         total={totalItems}
+        errores={errores}
       />
     </Grid>
   );

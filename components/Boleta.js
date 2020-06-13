@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: theme.spacing(2),
-    
   },
   actionsContainer: {
     marginBottom: theme.spacing(2),
@@ -39,6 +38,17 @@ function isEmpty(obj) {
     if (obj.hasOwnProperty(key)) return false;
   }
   return true;
+}
+
+function getFechaHoy() {
+  let d = new Date(),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+  return [year, month, day].join("-");
 }
 
 export default function Boleta() {
@@ -78,17 +88,32 @@ export default function Boleta() {
   const controlarPaso = (i) => {
     let erroresCampos = {};
     if (i === 0) {
-      if (!contribuyente.nib) {erroresCampos["nib"] = "Se debe ingresa el NIB";}
-
-      if (!contribuyente.cuit) {erroresCampos["cuit"] = "Se debe ingresa el CUIT";}
-
-      if (!contribuyente.razonSocial) {erroresCampos["razonSocial"] = "Se debe ingresa la Razón Social";}
-
-      if (!contribuyente.distrito) {erroresCampos["distrito"] = "Se debe ingresa el Distrito";}
+      return true;
+      if (!contribuyente.cuit) {
+        erroresCampos["cuit"] = "Se debe ingresar el CUIT";
+      }
+      if (!contribuyente.razonSocial) {
+        erroresCampos["razonSocial"] = "Se debe ingresar la Razón Social";
+      }
+      // if (!contribuyente.distrito) {
+      //   erroresCampos["distrito"] = "Se debe ingresar el Distrito";
+      // }
+      if (!contribuyente.fecha) {
+        erroresCampos["fecha"] = "Se debe ingresa la fecha";
+      } else if (contribuyente.fecha < getFechaHoy()) {
+        erroresCampos["fecha"] = "La fecha debe posterior al día de la fecha";
+      }
       setErrores(erroresCampos);
       return isEmpty(erroresCampos);
-    } else return true;
- /*   if (i === 0) {
+    } else if (i === 1) {
+      if (items.length === 0) {
+        erroresCampos["tabla"] = "Se deben cargar items para generar la boleta";
+      }
+      setErrores(erroresCampos);
+      return isEmpty(erroresCampos);
+    }
+    /*    else {
+        if (i === 0) {
       setContribuyente({
         nib: "11-111111-1",
         cuit: "11-111111-1",
@@ -137,12 +162,6 @@ export default function Boleta() {
     }
   };
 
-  const validarContribuyente = () => {
-    erroresCampos = {};
-    if (!nib) erroresCampos["nib"] = "Se debe ingresa el NIB";
-    setErrores(erroresCampos);
-  };
-
   const totalItems = () => {
     return items
       ? items
@@ -157,6 +176,7 @@ export default function Boleta() {
         return (
           <Contribuyente
             handleContribuyente={handleContribuyente}
+            contribuyente={contribuyente}
             errores={errores}
           />
         );
@@ -167,6 +187,7 @@ export default function Boleta() {
             handleAltaItem={handleAltaItem}
             handleEliminarItem={handleEliminarItem}
             totalItems={totalItems}
+            errores={errores}
           />
         );
       case 2:

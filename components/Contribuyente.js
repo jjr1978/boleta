@@ -81,33 +81,33 @@ function getFechaHoy() {
   return [year, month, day].join("-");
 }
 
-export default function Contribuyente({ handleContribuyente, errores }) {
+export default function Contribuyente({ handleContribuyente, contribuyente, errores }) {
   const [titulo, setTitulo] = useState("Ingrese los datos del Contribuyente");
   const [selectedDate, setSelectedDate] = React.useState({});
-  const [nib, setNib] = React.useState("");
+  // const [nib, setNib] = React.useState("");
   const [cuit, setCuit] = React.useState("");
   const [razonSocial, setRazonSocial] = React.useState("");
-  const [distrito, setDistrito] = React.useState("");
+ // const [distrito, setDistrito] = React.useState("");
 
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
     handleContribuyente("fecha", event.target.value);
   };
 
-  const handleChangeDistrito = (event) => {
+ /* const handleChangeDistrito = (event) => {
     setDistrito(event.target.value);
     handleContribuyente("distrito", event.target.value);
   };
-
+*/
   const handleChangeRazonSocial = (event) => {
     setRazonSocial(event.target.value);
     handleContribuyente("razonSocial", event.target.value);
   };
 
-  const handleChangeNib = (event) => {
-    setNib(event.target.value);
-    handleContribuyente("nib", event.target.value);
-  };
+  // const handleChangeNib = (event) => {
+  //   setNib(event.target.value);
+  //   handleContribuyente("nib", event.target.value);
+  // };
 
   const handleChangeCuit = (event) => {
     setCuit(event.target.value);
@@ -120,59 +120,51 @@ export default function Contribuyente({ handleContribuyente, errores }) {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} sm={6}>
-        <InputLabel htmlFor="nib">NIB</InputLabel>
-        <Input
-          value={nib}
-          onChange={handleChangeNib}
-          name="nib"
-          id="nib"
-          inputComponent={TextMaskNIB}
-          error={validarCampo("nib")}
-        />
-        <InputLabel error>{errores["nib"]}</InputLabel>
-      </Grid>
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={3}>
         <InputLabel htmlFor="nib">CUIT</InputLabel>
         <Input
-          value={cuit}
+          value={contribuyente.cuit}
           onChange={handleChangeCuit}
           id="cuit"
           name="cuit"
+          required={true}
           label="CUIT"
           inputComponent={TextMaskCUIT}
           error={validarCampo("cuit")}
         />
         <InputLabel error>{errores["cuit"]}</InputLabel>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} sm={6}>
         <TextField
           id="razonSocial"
           label="Razón Social"
           onChange={handleChangeRazonSocial}
-          value={razonSocial}
+          value={contribuyente.razonSocial}
           required={true}
           fullWidth
           error={validarCampo("razonSocial")}
         />
         <InputLabel error>{errores["razonSocial"]}</InputLabel>
       </Grid>
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={3}>
         <TextField
           id="fecha"
           label="Fecha"
           type="date"
-        //  defaultValue={getFechaHoy()}
+          value={contribuyente.fecha}
           onChange={handleDateChange}
+          required={true}
+          error={validarCampo("fecha")}
         />
+        <InputLabel error>{errores["fecha"]}</InputLabel>
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      {/* <Grid item xs={12} sm={6}>
         <InputLabel id="distrito-label">Distrito</InputLabel>
         <Select
           labelId="distrito-label"
           id="distrito"
-          value={distrito}
+          value={contribuyente.distrito?contribuyente.distrito:"USH"}
           onChange={handleChangeDistrito}
           width="30"
           error={validarCampo("distrito")}
@@ -181,8 +173,8 @@ export default function Contribuyente({ handleContribuyente, errores }) {
           <MenuItem value={"RGR"}>Rio Grande</MenuItem>
           <MenuItem value={"BUE"}>Buenos Aires</MenuItem>
         </Select>
-        <InputLabel error>{errores["distrito"]}</InputLabel>
-      </Grid>
+        <InputLabel error>{errores["distrito"]}</InputLabel> 
+  </Grid> */}
     </Grid>
   );
 }
