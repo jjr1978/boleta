@@ -1,5 +1,7 @@
 import React from "react";
+import AltaItem from "../components/AltaItem";
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 import {
   Dialog,
   DialogTitle,
@@ -18,7 +20,6 @@ import {
 } from "@material-ui/core";
 
 import Alert from "@material-ui/lab/Alert";
-import CloseIcon from "@material-ui/icons/Close";
 
 function ccyFormat(num) {
   return `$ ${parseFloat(num).toFixed(2)}`;
@@ -28,13 +29,14 @@ function dateFormat(fecha) {
   return "";
 }
 
-export default function BoletaTabla({ items, total, eliminarFila, errores }) {
+export default function BoletaTabla({ items, total, eliminarFila }) {
   const [open, setOpen] = React.useState(false);
+  const [openAltaItem, setOpenAltaItem] = React.useState(false);
   const [id, setId] = React.useState(0);
   const [openAlert, setOpenAlert] = React.useState(false);
 
   const mostrarAlert = () => {
-    if (total()===0) {
+    if (total() === 0) {
       return true;
     } else {
       return false;
@@ -44,6 +46,10 @@ export default function BoletaTabla({ items, total, eliminarFila, errores }) {
   const handleClickOpen = (id) => {
     setOpen(true);
     setId(id);
+  };
+
+  const handleClickEdit = (id) => {
+    setOpenAltaItem(true);
   };
 
   const handleCloseElim = () => {
@@ -70,6 +76,9 @@ export default function BoletaTabla({ items, total, eliminarFila, errores }) {
                     {row.descripcion} - [{row.referencia}]
                   </ListItemText>
                   <ListItemSecondaryAction>
+                    {/* <IconButton edge="start" aria-label="edit">
+                      <EditIcon onClick={() => handleClickEdit(row.id)} />
+                    </IconButton> */}
                     <IconButton edge="end" aria-label="delete">
                       <DeleteIcon onClick={() => handleClickOpen(row.id)} />
                     </IconButton>
@@ -92,15 +101,15 @@ export default function BoletaTabla({ items, total, eliminarFila, errores }) {
         <Alert
           severity="waring"
           // action={
-            // <IconButton
-            //   aria-label="close"
-            //   color="inherit"
-            //   onClick={() => {
-            //     cerrarAlert();
-            //   }}
-            // >
-            //   <CloseIcon fontSize="inherit" />
-            // </IconButton>
+          // <IconButton
+          //   aria-label="close"
+          //   color="inherit"
+          //   onClick={() => {
+          //     cerrarAlert();
+          //   }}
+          // >
+          //   <CloseIcon fontSize="inherit" />
+          // </IconButton>
           // }
         >
           Se deben cargar items para generar la boleta

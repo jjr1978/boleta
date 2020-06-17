@@ -13,6 +13,7 @@ import {
   DialogTitle,
   Select,
   MenuItem,
+  InputLabel,
 } from "@material-ui/core";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -49,7 +50,7 @@ function isEmpty(obj) {
   return true;
 }
 
-export default function AltaItem({ open, handleAltaItem }) {
+export default function AltaItem({ open, handleAltaItem, conceptos }) {
   const classes = useStyles();
 
   const [item, setItem] = useState({
@@ -59,6 +60,8 @@ export default function AltaItem({ open, handleAltaItem }) {
     referencia: "",
     importe: 0,
     vencimiento: "",
+    tramite: 0,
+    tramitecantidad: 0,
   });
 
   const [errores, setErrores] = useState({});
@@ -76,7 +79,14 @@ export default function AltaItem({ open, handleAltaItem }) {
     } else if (parseFloat(item.importe) <= 0) {
       erroresCampos["importe"] = "El importe debe ser mayor que 0";
     }
-
+    if (item.multinota === 1) {
+      if (!item.tramite || item.tramite === 0) {
+        erroresCampos["tramite"] = "Se debe ingresar el trámite";
+      }
+      if (!item.tramitecantidad) {
+        erroresCampos["tramitecantidad"] = "Se debe ingresar la cantidad";
+      }
+    }
     // if (!item.vencimiento) {
     //   erroresCampos["vencimiento"] =
     //     "Se debe ingresar una fecha de Vencimiento";
@@ -87,6 +97,8 @@ export default function AltaItem({ open, handleAltaItem }) {
     setErrores(erroresCampos);
     return isEmpty(erroresCampos);
   };
+
+  const filtarItems = () => {};
 
   const handleClickAgregar = () => {
     if (validarFormulario()) {
@@ -102,7 +114,7 @@ export default function AltaItem({ open, handleAltaItem }) {
     const { name, value } = event.target;
     setItem({
       ...item,
-      [name]: /* name === "importe" ? parseInt(value) : */ value,
+      [name]: name === "cantidad" ? parseInt(value) : value,
     });
   };
 
@@ -112,14 +124,15 @@ export default function AltaItem({ open, handleAltaItem }) {
         ...item,
         codigo: nuevoCodItem.cod_tipo_pago,
         descripcion: nuevoCodItem.tipo_pago,
-        multinota: nuevoCodItem.multinota
+        multinota: nuevoCodItem.multinota,
+        concepto: nuevoCodItem.cod_concepto,
       });
     }
   };
 
-  const setImporte = (nuevoValor) => {
-    const valor = parseFloat(nuevoValor).toFixed(2);
-    setItem({ ...item, importe: valor });
+  const setImporte = (nuevoImporte) => {
+    const importe = parseFloat(nuevoImporte).toFixed(2);
+    setItem({ ...item, importe: importe });
   };
 
   const validarCampo = (campo) => {
@@ -134,10 +147,11 @@ export default function AltaItem({ open, handleAltaItem }) {
           <Autocomplete
             name="itemCodAC"
             id="itemCodAC"
-            // classes={{
-            //   option: classes.option,
-            // }}
-            options={items}
+            options={
+              conceptos && conceptos.length > 0
+                ? items.filter((item) => conceptos.includes(item.cod_concepto))
+                : items
+            }
             autoHighlight
             size="small"
             getOptionLabel={(option) =>
@@ -171,23 +185,39 @@ export default function AltaItem({ open, handleAltaItem }) {
             autoComplete="off"
           />
 
-          {(item.multinota ===1) ? (
-            <Select
-              label="Trámite"
-              id="tipo-tramite"
-              value={item.tramite}
-              onChange={handleChange}
-              fullWidth
-            >
-              {}
-              {tipos_tramite
-                .filter((tipo) => tipo.cod_tipo_pago === item.codigo)
-                .map((tipo) => (
-                  <MenuItem value={10}>
-                    {tipo.descripcion}- $ {tipo.importe}
-                  </MenuItem>
-                ))}
-            </Select>
+          {item.multinota === 1 ? (
+            <>
+              <InputLabel id="tramite-label">Tipo Trámite</InputLabel>
+              <Select
+                labelId="tramite-label"
+                id="tramite"
+                name="tramite"
+                value={item.tramite}
+                onChange={handleChange}
+                error={validarCampo("tramite")}
+                fullWidth
+              >
+                <MenuItem value="0">
+                  <em>Seleccione Trámite</em>
+                </MenuItem>
+                {tipos_tramite
+                  .filter((tipo) => tipo.cod_tipo_pago === item.codigo)
+                  .map((tipo) => (
+                    <MenuItem value={tipo.id_tipo_tramite}>
+                      {tipo.descripcion}- $ {tipo.importe}
+                    </MenuItem>
+                  ))}
+              </Select>
+              <TextField
+                id="tramitecantidad"
+                label="Cantidad"
+                name="tramitecantidad"
+                type="Number"
+                value={item.tramitecantidad}
+                onChange={handleChange}
+                error={validarCampo("tramitecantidad")}
+              />
+            </>
           ) : (
             <></>
           )}
@@ -208,19 +238,8 @@ export default function AltaItem({ open, handleAltaItem }) {
             autoComplete="off"
             error={validarCampo("importe")}
             helperText={errores["importe"]}
-
-            // classes={{
-            //   campos: classes.campos,
-            // }}
           />
-          {/* <TextField
-          name="importe"
-          label="Importe"
-          id="importe"
-          type="number"
-          value={item.importe}
-          onChange={handleChange}
-        /> */}
+
           {/* <TextField
             style={{ margin: 24 }}
             id="vencimiento"

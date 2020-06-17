@@ -88,7 +88,6 @@ export default function Boleta() {
   const controlarPaso = (i) => {
     let erroresCampos = {};
     if (i === 0) {
-      return true;
       if (!contribuyente.cuit) {
         erroresCampos["cuit"] = "Se debe ingresar el CUIT";
       }
@@ -112,43 +111,6 @@ export default function Boleta() {
       setErrores(erroresCampos);
       return isEmpty(erroresCampos);
     }
-    /*    else {
-        if (i === 0) {
-      setContribuyente({
-        nib: "11-111111-1",
-        cuit: "11-111111-1",
-        razonSocial: "Juan Jose Rodriguez",
-        distrito: "RGR",
-      });
-    } else if (i === 1) {
-      setItems([
-        {
-          id: 1,
-          codigo: "100105025",
-          descripcion: "TASA - Trámites Urgentes",
-          referencia: "1212",
-          importe: "100.00",
-          vencimiento: "2020-06-12",
-        },
-        {
-          id: 2,
-          codigo: "100105029",
-          descripcion: "Certificado de …",
-          referencia: "1216",
-          importe: "1500.00",
-          vencimiento: "2020-06-12",
-        },
-        {
-          id: 3,
-          codigo: "102105053",
-          descripcion: "TASA - URGENTE",
-          referencia: "1218",
-          importe: "200.00",
-          vencimiento: "2020-06-12",
-        },
-      ]);
-    }
-    return true;*/
   };
 
   const etiquetaPaso = (i) => {

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Typography, Grid, Button } from "@material-ui/core";
+import React, { useState } from "react";
+import {  Grid, Button } from "@material-ui/core";
 import BoletaTabla from "../components/BoletaTabla";
 import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
 import AltaItem from "../components/AltaItem";
@@ -16,7 +16,7 @@ export default function BoletaDetallePanel({
   handleEliminarItem,
   items,
   totalItems,
-  errores
+  errores,
 }) {
   const [mostrarAltaItem, setMostrarAltaItem] = useState(false);
 
@@ -25,16 +25,18 @@ export default function BoletaDetallePanel({
   };
 
   const nuevaFila = (item) => {
-    let maxId = 0;
-    if (!isEmpty(items)) {
-      maxId = Math.max.apply(
-        null,
-        items.map((it) => it.id)
-      );
+    if (item) {
+      let maxId = 0;
+      if (!isEmpty(items)) {
+        maxId = Math.max.apply(
+          null,
+          items.map((it) => it.id)
+        );
+      }
+      const nuevoId = maxId + 1;
+      item["id"] = nuevoId;
+      handleAltaItem(item);
     }
-    const nuevoId = maxId + 1;
-    item["id"] = nuevoId;
-    handleAltaItem(item);
     setMostrarAltaItem(false);
   };
 
@@ -42,10 +44,14 @@ export default function BoletaDetallePanel({
     handleEliminarItem(id);
   };
 
+  const getConceptoBoleta = () => {
+    return [...new Set(items.map(item => item.concepto))];
+  }
+
   return (
     <Grid>
       {mostrarAltaItem ? (
-        <AltaItem open={true} handleAltaItem={nuevaFila} />
+        <AltaItem open={true} handleAltaItem={nuevaFila} conceptos={getConceptoBoleta()}/>
       ) : (
         <Button
           style={{ margin: 12 }}

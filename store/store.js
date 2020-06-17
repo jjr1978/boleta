@@ -1,6 +1,6 @@
 export const tipos_tramite = [
   {
-    ide_tipo_tramite: 1,
+    id_tipo_tramite: 1,
     descripcion:
       "Inscripción en el Registro Permanente de Actividades Comerciales",
     importe: 0.0,
@@ -9,7 +9,7 @@ export const tipos_tramite = [
     cod_tipo_pago: 100105011,
   },
   {
-    ide_tipo_tramite: 2,
+    id_tipo_tramite: 2,
     descripcion:
       "Modificación en el Registro Permanente de Actividades Comerciales",
     importe: 0.0,
@@ -18,7 +18,7 @@ export const tipos_tramite = [
     cod_tipo_pago: 100105011,
   },
   {
-    ide_tipo_tramite: 3,
+    id_tipo_tramite: 3,
     descripcion: "Notas Varias",
     importe: 5.0,
     template: "multinota.tpl",
@@ -26,7 +26,7 @@ export const tipos_tramite = [
     cod_tipo_pago: 100105011,
   },
   {
-    ide_tipo_tramite: 5,
+    id_tipo_tramite: 5,
     descripcion: "Certificado de Deuda Ley 962",
     importe: 0.0,
     template: "cert_deuda_def_cons.tpl",
