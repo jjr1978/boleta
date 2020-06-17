@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Contribuyente from "../components/Contribuyente";
 import BoletaDetallePanel from "../components/BoletaDetallePanel";
 import BoletaFinalizar from "../components/BoletaFinalizar";
+import { validarCuit } from "./helpers/contribuyente";
 import {
   CssBaseline,
   AppBar,
@@ -90,7 +91,13 @@ export default function Boleta() {
     if (i === 0) {
       if (!contribuyente.cuit) {
         erroresCampos["cuit"] = "Se debe ingresar el CUIT";
+      } else {
+        if (!validarCuit(contribuyente.cuit)) {
+          erroresCampos["cuit"] = "El CUIT ingresado no es válido";
+        }
       }
+
+
       if (!contribuyente.razonSocial) {
         erroresCampos["razonSocial"] = "Se debe ingresar la Razón Social";
       }
